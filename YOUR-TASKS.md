@@ -12,17 +12,40 @@ So your last full working day is **Sunday Sep 14 (IST)** — but we are submitti
 
 ## TODAY — Aug 13 (do these first, ~90 minutes)
 
-### 1. Request Bedrock model access ⚠️ MOST URGENT
-This can take hours or days to approve. Everything else is blocked behind it.
+### 1. Set up AWS access on your machine ⚠️ MOST URGENT
 
-- Go to the AWS Console → search "Bedrock" → open it
-- Set region to **us-east-1** (top right corner)
-- Left sidebar → **Model access** → **Modify model access**
-- Tick **all Anthropic Claude models**
-- Submit the request
+**Update (Aug 13):** the old "Model access" approval page has been **retired**.
+Serverless models now enable automatically on first use. Anthropic models may ask
+you for **use-case details** the first time you invoke one — fill that in if
+prompted. There is no approval queue to wait in.
 
-**Done when:** the Anthropic models show status "Access granted." If it says
-"In progress," that's fine — check again tomorrow morning.
+The actual blocker is that **AWS CLI is not installed and no credentials are
+configured** on this machine. Three steps:
+
+**1a. Install the AWS CLI**
+Download the Windows MSI installer from the AWS CLI docs page and run it.
+Then close and reopen your terminal.
+*Done when:* `aws --version` prints a version number.
+
+**1b. Create an access key**
+- AWS Console → **IAM** → **Users** → create a user (e.g. `docket-dev`)
+- Attach the **PowerUserAccess** policy (enough for Bedrock + AgentCore)
+- Open the user → **Security credentials** → **Create access key** → choose
+  **Command Line Interface (CLI)**
+- Copy the Access key ID and Secret access key
+
+⚠️ **Do not use your root account keys.** ⚠️ **Do not paste the secret key into
+this chat** — you type it into `aws configure` yourself, and I never see it.
+
+**1c. Configure the CLI**
+Run `aws configure` in your terminal and enter:
+- Access key ID → (paste)
+- Secret access key → (paste)
+- Default region → `us-east-1`
+- Output format → `json`
+
+**Done when:** `aws sts get-caller-identity` prints your account number
+(527371380551). Tell me when it does and I'll verify Bedrock model access.
 
 ### 2. Create your AWS Builder ID
 - Go to the AWS Builder ID sign-up page and register with your email
