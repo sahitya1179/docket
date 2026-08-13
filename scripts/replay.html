@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Docket — ingest replay</title>
+<style>
+  :root { --bg:#0b0f14; --fg:#d7e0ea; --dim:#5c6b7a; --accent:#5ec8f2; --hot:#ffb454; --good:#7ee081; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { height:100%; background:var(--bg); }
+  body {
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Cascadia Code","JetBrains Mono",Consolas,"Courier New",monospace;
+    color:var(--fg); cursor:none;
+  }
+  #screen {
+    width:min(1180px,94vw); height:min(760px,92vh);
+    padding:36px 44px; overflow:hidden;
+    background:linear-gradient(180deg,#0d1218,#0b0f14);
+    border:1px solid #1b2530; border-radius:10px;
+    box-shadow:0 24px 80px rgba(0,0,0,.6);
+    font-size:clamp(13px,1.35vw,19px); line-height:1.55;
+    white-space:pre-wrap; word-break:break-word;
+  }
+  .dim    { color:var(--dim); }
+  .accent { color:var(--accent); }
+  .hot    { color:var(--hot); font-weight:700; }
+  .good   { color:var(--good); }
+  .rule   { color:#22303d; }
+  #cursor { display:inline-block; width:.6em; height:1.05em; background:var(--fg);
+            vertical-align:-.18em; animation:blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0 } }
+  #hint { position:fixed; bottom:18px; left:0; right:0; text-align:center;
+          color:#3d4a58; font-size:13px; letter-spacing:.04em; }
+</style>
+</head>
+<body>
+<div id="screen"></div>
+<div id="hint">press SPACE to play &nbsp;·&nbsp; R to replay &nbsp;·&nbsp; F11 for fullscreen</div>
+
+<script>
+// Each line: [text, cssClass, pauseAfterMs]
+const SCRIPT = [
+  ["PS C:\\docket> python scripts/demo_ingest.py", "", 700],
+  ["", "", 120],
+  ["==============================================================================", "rule", 40],
+  ["  DOCKET — reading a real Oakland City Council agenda packet", "accent", 60],
+  ["==============================================================================", "rule", 420],
+  ["", "", 60],
+  ["  Source: Legistar public API — city 'oakland', event 9560", "dim", 90],
+  ["  Fetched 78 agenda rows in 3 ms", "dim", 620],
+  ["", "", 60],
+  ["  --------------------------------------------------------------------------", "rule", 40],
+  ["   17 procedural rows discarded before any model call", "", 240],
+  ["   61 real legislative matters kept", "", 240],
+  ["  --------------------------------------------------------------------------", "rule", 560],
+  ["", "", 60],
+  ["  Discarded (never reaches a model — saves tokens every night):", "dim", 160],
+  ["      · PUBLIC PARTICIPATION The Public May Observe And/Or Participate In", "dim", 70],
+  ["      · DEFINITION OF TERMS: • Action Item: shall mean any resolution, ord", "dim", 70],
+  ["      · Call To Order", "dim", 70],
+  ["      · ROLL CALL / CITY COUNCIL", "dim", 70],
+  ["      · ... and 13 more", "dim", 620],
+  ["", "", 60],
+  ["  How the real matters break down:", "", 160],
+  ["      action            36", "", 130],
+  ["      consent           24", "hot", 130],
+  ["      informational      1", "", 780],
+  ["", "", 80],
+  ["==============================================================================", "rule", 60],
+  ["  24 ITEMS ARE ON THE CONSENT CALENDAR", "hot", 520],
+  ["  They pass in a single vote, with no discussion,", "", 300],
+  ["  unless one person asks for one to be pulled.", "", 300],
+  ["==============================================================================", "rule", 700],
+  ["", "", 60],
+  ["  A few of them:", "", 220],
+  ["", "", 40],
+  ["   [6.2]  file 26-0890", "good", 60],
+  ["        Declaration Of A Local Emergency Due To AIDS Epidemic", "", 220],
+  ["   [6.4]  file 26-0892", "good", 60],
+  ["        Declaration Of A Local Emergency On Homelessness", "", 220],
+  ["   [6.7]  file 26-0853", "good", 60],
+  ["        Consolidation Of The November 3, 2026 General Municipal Election", "", 900],
+  ["", "", 80],
+  ["  Nobody reads 800 pages in 72 hours. That is the problem.", "accent", 2200],
+];
+
+const screen = document.getElementById("screen");
+const CHAR_MS = 7;      // typing speed per character
+let running = false;
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function typeLine(text, cls) {
+  const span = document.createElement("span");
+  if (cls) span.className = cls;
+  screen.appendChild(span);
+
+  // Rules and separators snap in; prose types out.
+  if (cls === "rule" || text.trim() === "") {
+    span.textContent = text;
+  } else {
+    for (const ch of text) {
+      span.textContent += ch;
+      if (ch !== " ") await sleep(CHAR_MS);
+    }
+  }
+  screen.appendChild(document.createTextNode("\n"));
+  screen.scrollTop = screen.scrollHeight;
+}
+
+async function play() {
+  if (running) return;
+  running = true;
+  screen.textContent = "";
+
+  for (const [text, cls, pause] of SCRIPT) {
+    await typeLine(text, cls);
+    await sleep(pause);
+  }
+
+  const cur = document.createElement("span");
+  cur.id = "cursor";
+  screen.appendChild(cur);
+  running = false;
+}
+
+addEventListener("keydown", e => {
+  if (e.code === "Space") { e.preventDefault(); play(); }
+  if (e.key.toLowerCase() === "r") { running = false; setTimeout(play, 50); }
+});
+
+screen.innerHTML = '<span class="dim">Docket — ingest replay\n\nPress SPACE to begin.</span>';
+</script>
+</body>
+</html>

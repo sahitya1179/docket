@@ -80,14 +80,35 @@ If any single problem consumes more than **45 minutes** with no progress:
 
 ## P5 — Video footage (the most-forgotten protocol)
 
-**Every time a feature works for the first time, immediately record 30 seconds
-of screen capture.** Before moving on. No exceptions.
+**Every time a feature works for the first time, capture 30 seconds of it.**
 
-Save to `footage/` with a name like `2026-08-22-impact-scoring-works.mp4`.
+Save to `footage/` named `YYYY-MM-DD-what-it-shows.mp4`. On Sep 11 you will be
+scanning filenames, not watching clips to identify them.
 
-Reason: on Sep 10 you will need footage of features working. Re-staging a demo
-from scratch takes 6–10 hours; editing existing footage takes ~4. This protocol
-is the difference.
+Reason: on Sep 10 you need footage of features working. Re-staging a demo from
+scratch takes 6–10 hours; editing existing footage takes ~4.
+
+### When recording may be deferred (added 2026-08-13)
+
+The real risk is **losing a state you cannot reproduce**. So:
+
+- **Reproducible feature** — there is a committed script, cached data, or a
+  committed fixture that regenerates the exact output on demand → recording may
+  be **batched later**, as long as it happens before the Sep 10 freeze. Add the
+  clip to the Recording queue below so it isn't forgotten.
+- **Non-reproducible moment** — a live deploy, a one-off API response, a
+  transient UI state, anything depending on a service that may change → record
+  **immediately**. This is the case P5 was written for.
+
+Batching reproducible clips into one evening session is usually *more* efficient
+than stopping mid-build for each one.
+
+### Recording queue
+
+Clips owed, all reproducible. Clear before Sep 10.
+
+- [ ] `ingest-consent-calendar` — run `python scripts/demo_ingest.py`, or open
+      `scripts/replay.html` and press SPACE (fullscreen with F11)
 
 ---
 
