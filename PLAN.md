@@ -25,9 +25,16 @@ Accountability Tracker already does it. It stays as a feature; it is not the pit
 
 ### The two real differentiators (both verified, not assumed)
 
-1. **Per-address impact filtering.** Everything above filters by *topic*
-   (housing, transit, safety). Docket filters by **geocoded proximity to a
-   specific parcel** plus the group's stated mission. Harder, and unoccupied.
+1. **Location-aware impact filtering.** Everything above filters by *topic*
+   (housing, transit, safety). Docket filters by **geocoded proximity to the
+   group's streets**, falling back to mission-match for citywide items.
+
+   Measured honestly on Oakland 9560: **18% of substantive items carry a
+   geographic reference**, and those are the high-stakes ones — parcel sales,
+   developments, zoning changes. The other 66% are genuinely citywide
+   (Municipal Code, Salary Ordinance, Sanctuary City policy) and are caught by
+   mission-match instead. Do not claim proximity filtering covers everything;
+   claim it covers the items where geography is what makes them matter.
 2. **The approval-gated action package.** Nobody drafts a comment in the group's
    voice, gates it behind a hook, and files it. This is also the Strands
    engineering story — and **AWS is judging Strands usage, not product novelty.**
