@@ -38,6 +38,9 @@ cdk.out/
 .aws-sam/
 samconfig.toml
 
+# Local machine config (not shared)
+.claude/settings.local.json
+
 # OS / editor
 .DS_Store
 Thumbs.db
