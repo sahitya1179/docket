@@ -13,9 +13,7 @@ from math import asin, cos, radians, sin, sqrt
 EARTH_RADIUS_M = 6_371_008.8
 
 
-def haversine_m(
-    lat1: float, lon1: float, lat2: float, lon2: float
-) -> float:
+def haversine_m(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """Distance between two WGS84 points, in metres."""
     p1, p2 = radians(lat1), radians(lat2)
     dphi = p2 - p1
@@ -25,7 +23,5 @@ def haversine_m(
     return 2 * EARTH_RADIUS_M * asin(sqrt(a))
 
 
-def within_radius(
-    lat1: float, lon1: float, lat2: float, lon2: float, radius_m: float
-) -> bool:
+def within_radius(lat1: float, lon1: float, lat2: float, lon2: float, radius_m: float) -> bool:
     return haversine_m(lat1, lon1, lat2, lon2) <= radius_m

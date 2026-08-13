@@ -29,9 +29,28 @@ _LEADING_NOISE = re.compile(
 )
 
 _SUFFIXES = (
-    "Street", "St", "Avenue", "Ave", "Road", "Rd", "Boulevard", "Blvd",
-    "Way", "Drive", "Dr", "Place", "Pl", "Court", "Ct", "Lane", "Ln",
-    "Plaza", "Parkway", "Pkwy", "Circle", "Terrace",
+    "Street",
+    "St",
+    "Avenue",
+    "Ave",
+    "Road",
+    "Rd",
+    "Boulevard",
+    "Blvd",
+    "Way",
+    "Drive",
+    "Dr",
+    "Place",
+    "Pl",
+    "Court",
+    "Ct",
+    "Lane",
+    "Ln",
+    "Plaza",
+    "Parkway",
+    "Pkwy",
+    "Circle",
+    "Terrace",
 )
 _SUFFIX_RE = "|".join(_SUFFIXES)
 

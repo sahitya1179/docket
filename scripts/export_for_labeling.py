@@ -124,7 +124,10 @@ def main() -> None:
         n = sum(1 for r in batch if r["stage"] == "consent")
         return f"{n}/{len(batch)}"
 
-    print(f"  holdout.csv  {len(holdout):>3} items  (YOU label these) consent={consent_share(holdout)}")
+    print(
+        f"  holdout.csv  {len(holdout):>3} items  (YOU label these) "
+        f"consent={consent_share(holdout)}"
+    )
     print(f"  overlap.csv  {len(overlap):>3} items  (YOU label these too, independently)")
     print(f"  train.csv    {len(train):>3} items  (Claude labels these)")
     print(f"\n  written to {OUT_DIR}")

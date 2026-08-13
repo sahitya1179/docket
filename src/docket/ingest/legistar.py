@@ -175,11 +175,7 @@ def _parse_date(value: str | None) -> datetime | None:
 
 def _attachments(row: dict) -> list[Attachment]:
     # Field name varies across Legistar tenants; check the known spellings.
-    raw = (
-        row.get("EventItemMatterAttachments")
-        or row.get("EventItemAttachments")
-        or []
-    )
+    raw = row.get("EventItemMatterAttachments") or row.get("EventItemAttachments") or []
     out = []
     for att in raw:
         if isinstance(att, dict) and att.get("MatterAttachmentHyperlink"):

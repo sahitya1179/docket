@@ -24,9 +24,7 @@ class Settings:
     model_extract: str = os.getenv("DOCKET_MODEL_EXTRACT", "anthropic.claude-haiku-4-5")
     model_brief: str = os.getenv("DOCKET_MODEL_BRIEF", "anthropic.claude-sonnet-5")
 
-    nominatim_user_agent: str = os.getenv(
-        "NOMINATIM_USER_AGENT", "docket-hackathon/0.1"
-    )
+    nominatim_user_agent: str = os.getenv("NOMINATIM_USER_AGENT", "docket-hackathon/0.1")
 
     # PROTOCOLS.md P7 — must be True everywhere except a deliberate live deploy.
     demo_mode: bool = os.getenv("DOCKET_DEMO_MODE", "1") == "1"
