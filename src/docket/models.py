@@ -28,6 +28,22 @@ class Attachment(BaseModel):
     url: str
 
 
+class GeocodeResult(BaseModel):
+    """Outcome of one address lookup.
+
+    `found` is explicit rather than signalled by null coordinates: a geocode
+    miss silently drops an agenda item from impact filtering, so misses have to
+    be visible and countable rather than falsy.
+    """
+
+    query: str
+    found: bool
+    provider: str
+    latitude: float | None = None
+    longitude: float | None = None
+    matched_address: str | None = None
+
+
 class AgendaItem(BaseModel):
     """One line on a meeting agenda."""
 

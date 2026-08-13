@@ -6,59 +6,66 @@ Updated at the end of every session, and immediately on hitting a rate limit
 ---
 
 **Last updated:** 2026-08-13
-**Current phase:** Phase 1 — Data spine + eval (Phase 0 substantially done)
+**Current phase:** Phase 1 — Data spine + eval
 **Phase 1 exit condition:** `eval.py` prints a precision/recall score
 
 ## Done
 
 **Phase 0**
-- ✅ Repo initialized, MIT license, `.gitignore`, README with prior-art positioning
-- ✅ Pushed to https://github.com/sahitya1179/docket
-- ✅ `pyproject.toml`, venv, deps installed (Python 3.14.4)
+- ✅ Repo, MIT license, `.gitignore`, README with prior-art positioning
+- ✅ `pyproject.toml`, venv, Python 3.14.4
 - ⬜ AgentCore template deploy — **blocked on AWS CLI + credentials**
 
-**Phase 1 (started early, since it needs no AWS access)**
+**Phase 1**
 - ✅ `docket.cache.DiskCache` — content-addressed, atomic writes
-- ✅ `docket.models` — `AgendaItem`, `Meeting`, `Stage`, `Attachment`
-- ✅ `docket.ingest.legistar` — JSON API client, retry, disk cache (3ms cached reads)
-- ✅ `docket.ingest.triage` — matter-file rule, 61 kept / 17 dropped on Oakland 9560
-- ✅ `docket.ingest.sections` — hierarchical stage inheritance
-- ✅ 12 tests passing offline against a committed fixture; ruff clean
+- ✅ `docket.models` — `AgendaItem`, `Meeting`, `Stage`, `GeocodeResult`
+- ✅ `docket.ingest` — Legistar client, triage, section-aware stages
+- ✅ `docket.geo` — Census → Nominatim fallback, rate limiter, haversine
+- ✅ `scripts/demo_ingest.py` + `scripts/replay.html` (footage-ready)
+- ✅ **26 tests passing offline**, ruff clean
 
-## What the real data taught us (drove two rewrites)
+## What the real data taught us
 
-1. **Matter file is the signal for real business.** All 61 items with a matter
-   file are legislative matters; all 17 without are procedural. My first
-   heuristic assumed an agenda number meant real business — wrong, "Call To
-   Order" is item 1.
-2. **Oakland agendas are hierarchical.** Item `6` is the header "CONSENT
-   CALENDAR (CC) ITEMS:"; `6.1`–`6.x` are its children. Stage must be inherited
-   from the section, not keyword-matched — keyword matching read "ACTION ON
-   OTHER **NON-CONSENT** CALENDAR ITEMS:" as a consent section.
-3. **Stage is only meaningful for substantive items.** Procedural lines like
-   "Approval of the Consent Agenda" otherwise inflate the consent count.
+1. **Matter file marks real business.** 61 items with one are legislative
+   matters; 17 without are procedural. Agenda numbers do NOT work as a signal —
+   "Call To Order" is item 1.
+2. **Oakland agendas are hierarchical.** Item `6` is the "CONSENT CALENDAR"
+   header; `6.1`–`6.x` inherit from it. Keyword matching read "NON-CONSENT
+   CALENDAR" as consent — the exact inverse of what this product detects.
+3. **Stage is meaningful only for substantive items**, or procedural lines
+   inflate the consent count.
+4. **Census geocoding is fine for ordinary Oakland addresses** (`1 Broadway`,
+   `3301 E 12th St` both resolve). It fails on **non-standard forms** — plazas
+   and some named venues. 2-in-6 miss rate on a realistic sample; Nominatim
+   rescued both.
 
-**Headline demo statistic: 24 of 61 items in one Oakland meeting sit on the
-consent calendar** — passed in a single block with no discussion unless pulled.
+**Headline demo statistic: 24 of 61 real items in one Oakland meeting sit on
+the consent calendar** — one vote, no discussion, unless someone pulls them.
 
 ## Next 3 concrete steps
 
-1. **Geocoder** (`src/docket/geo/`): Census → OSM/Nominatim fallback, permanent
-   disk cache, plus a test asserting a non-zero match rate on Oakland addresses
-   (Census alone returns 0 for these — the known trap)
-2. **Address extraction** from agenda item titles, so the geocoder has input
-3. **Labeling export**: a CSV/JSONL of 100–150 real items for the human to label
-   (YOUR-TASKS.md #7), then `eval.py` to score against the holdout
+1. **Address extraction** (`src/docket/extract/`): pull street addresses and
+   dollar amounts out of agenda item titles so the geocoder has input. Start
+   rules-based (regex for `NNNN Street Name`, `$N,NNN`), measure coverage on
+   the 61 real items, then decide whether an LLM pass is needed.
+2. **Labeling export** (`scripts/export_for_labeling.py`): emit 100–150 real
+   items as a CSV the human can label relevant/not-relevant plus a one-line
+   reason (YOUR-TASKS.md #7).
+3. **`eval.py`**: score the impact classifier against the labeled holdout.
+   This is the Phase 1 exit condition.
 
 ## Blocked on
 
 - **AWS CLI install + credentials** (YOUR-TASKS.md #1). Blocks only the
   AgentCore deploy. Steps 1–3 above are unblocked.
+- **Human labeling** gates step 3, not steps 1–2.
 
 ## Open items for the human
 
+- Record the ingest clip (PROTOCOLS.md P5 recording queue) — deferred to
+  evening, reproducible, fine
 - Confirm the MIT LICENSE name ("Khaja Sahitya Sarabu")
-- Public AWS Builder ID profile URL (the `?tab=badges` link is the logged-in view)
+- Public AWS Builder ID profile URL
 - Send the 8–10 neighborhood-org emails (YOUR-TASKS.md #5)
 
 ## Note
