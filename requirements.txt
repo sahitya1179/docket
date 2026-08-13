@@ -1,0 +1,30 @@
+# Agent framework
+strands-agents
+strands-agents-tools
+
+# AWS
+boto3
+bedrock-agentcore
+
+# Civic data
+scraper-legistar        # opencivicdata/python-legistar-scraper (BSD-3)
+censusgeocode           # US Census geocoder wrapper
+
+# HTTP / parsing
+httpx
+tenacity
+pymupdf                 # agenda packet PDF extraction
+
+# Models / validation
+pydantic>=2
+
+# Web
+fastapi
+uvicorn
+jinja2
+
+# Dev
+pytest
+pytest-asyncio
+ruff
+python-dotenv

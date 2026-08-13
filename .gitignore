@@ -1,0 +1,46 @@
+# Secrets — NEVER commit these. The repo is public.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials
+aws-credentials.json
+
+# Caches (PROTOCOLS.md P4) — regenerable, and large
+cache/
+.cache/
+fixtures/raw/
+*.sqlite
+*.db
+
+# Video footage (PROTOCOLS.md P5) — large binaries, keep local
+footage/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node (frontend)
+node_modules/
+dist/
+build/
+.next/
+
+# AWS / CDK
+cdk.out/
+.aws-sam/
+samconfig.toml
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
